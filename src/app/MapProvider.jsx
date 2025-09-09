@@ -299,7 +299,7 @@ const MapProvider = ({ children }) => {
     };
 
     handleSearch();
-  }, [isKeyboardTyping, search, selectedBlockOption, selectedFloorOption]);
+  }, [isKeyboardTyping, search, selectedBlockOption, selectedFloorOption, panZoomApi]);
 
   return (
     <MapContext.Provider
