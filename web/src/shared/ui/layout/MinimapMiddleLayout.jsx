@@ -1,9 +1,9 @@
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { MapContext, useWindowDimensions } from "../../../shared";
+import { MapContext, useWindowDimensions } from "../..";
 import { useColorModeValue } from "@chakra-ui/react";
 import { useContext } from "react";
 
-const MinimapLayout = ({ children }) => {
+const MinimapMiddleLayout = ({ children }) => {
   const { height, width } = useWindowDimensions();
   const backgroundColorPrimary = "#363636ff";
   const backgroundColorSecondary = "#4e4e4eff";
@@ -27,7 +27,7 @@ const MinimapLayout = ({ children }) => {
           width={width}
           height={height}
           xmlns={"http://www.w3.org/2000/svg"}
-          viewBox={"0 0 347.52 354.54"}
+          viewBox={"0 0 328.03 329.11"}
         >
           <defs>
             <style>
@@ -218,4 +218,4 @@ const MinimapLayout = ({ children }) => {
   );
 };
 
-export default MinimapLayout;
+export default MinimapMiddleLayout;
