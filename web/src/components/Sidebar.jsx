@@ -18,12 +18,14 @@ import {
   useColorModeValue,
   Switch,
   HStack,
+  useToast,
 } from "@chakra-ui/react";
 import {
   ArrowRightIcon,
   ArrowLeftIcon,
   SunIcon,
   MoonIcon,
+  LinkIcon,
 } from "@chakra-ui/icons";
 import { MapContext } from "../shared";
 
@@ -33,9 +35,32 @@ const Sidebar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const { funMode, setFunMode } = useContext(MapContext);
+  const toast = useToast();
 
   const toggleSwitch = () => {
     setFunMode(!funMode);
+  };
+
+  const handleShare = async () => {
+    try {
+      const url = window.location.href;
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: "Link copied",
+        description: "The current view URL was copied to your clipboard.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (e) {
+      toast({
+        title: "Could not copy",
+        description: "Your browser blocked clipboard access.",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -128,6 +153,11 @@ const Sidebar = () => {
           </DrawerBody>
           <DrawerFooter>
             <List w="100%" display="flex" flexDirection="column">
+              <ListItem>
+                <Button onClick={handleShare} boxShadow={"lg"} w="100%">
+                  <Text size="sm">share this link</Text>
+                </Button>
+              </ListItem>
               <ListItem justify="space-between">
                 
               </ListItem>

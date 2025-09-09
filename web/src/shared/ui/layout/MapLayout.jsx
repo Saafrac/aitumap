@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { useColorModeValue, IconButton, Flex } from "@chakra-ui/react";
+import { useColorModeValue, IconButton, Flex, Button, Text } from "@chakra-ui/react";
 import { MapContext, useWindowDimensions } from "../..";
 import Wallpaper from "../general/map/Wallpaper";
 import IconsCommon from "../general/map/IconsCommon";
@@ -227,7 +227,15 @@ const MapLayout = ({ children }) => {
           {children}
           <IconsCommon />
         </svg>
-        <Flex position="absolute" right="16px" bottom="16px" gap="8px">
+        <Flex position="absolute" right="16px" bottom="16px" gap="8px" direction="column" align="flex-end">
+          <Button size="xs" h="28px" px="10px" bg={useColorModeValue("#edf2f7", "#242a36")} _hover={{ bg: "#ffffff5e" }} onClick={() => {
+            try {
+              const url = window.location.href;
+              navigator.clipboard.writeText(url);
+            } catch (e) {}
+          }}>
+            <Text fontSize="xs">share</Text>
+          </Button>
           <IconButton aria-label="Reset view" size="sm" onClick={() => {
             try { panZoomApi?.resetTransform?.(); } catch (e) {}
           }}>
