@@ -20,13 +20,7 @@ import {
   HStack,
   useToast,
 } from "@chakra-ui/react";
-import {
-  ArrowRightIcon,
-  ArrowLeftIcon,
-  SunIcon,
-  MoonIcon,
-  LinkIcon,
-} from "@chakra-ui/icons";
+import { ArrowRightIcon, ArrowLeftIcon, SunIcon, MoonIcon } from "@chakra-ui/icons";
 import { MapContext } from "../shared";
 
 const Sidebar = () => {
