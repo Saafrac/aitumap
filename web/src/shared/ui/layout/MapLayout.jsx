@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { useColorModeValue, IconButton, Flex, Button, Text } from "@chakra-ui/react";
+import { useColorModeValue, IconButton, Flex, Button, Text, useToast } from "@chakra-ui/react";
 import { MapContext, useWindowDimensions } from "../..";
 import Wallpaper from "../general/map/Wallpaper";
 import IconsCommon from "../general/map/IconsCommon";
@@ -17,6 +17,7 @@ const MapLayout = ({ children }) => {
   const strokeColorDark = "#7f7f7f";
   const strokeColor = useColorModeValue(strokeColorLight, strokeColorDark);
   const { funMode, registerPanZoomApi, panZoomApi } = useContext(MapContext);
+  const toast = useToast();
 
   const dropShadow = funMode
     ? "drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5))"
@@ -228,12 +229,34 @@ const MapLayout = ({ children }) => {
           <IconsCommon />
         </svg>
         <Flex position="absolute" right="16px" bottom="16px" gap="8px" direction="column" align="flex-end">
-          <Button size="xs" h="28px" px="10px" bg={useColorModeValue("#edf2f7", "#242a36")} _hover={{ bg: "#ffffff5e" }} onClick={() => {
-            try {
-              const url = window.location.href;
-              navigator.clipboard.writeText(url);
-            } catch (e) {}
-          }}>
+          <Button
+            size="xs"
+            h="28px"
+            px="10px"
+            bg={useColorModeValue("#edf2f7", "#242a36")}
+            _hover={{ bg: "#ffffff5e" }}
+            onClick={async () => {
+              try {
+                const url = window.location.href;
+                await navigator.clipboard.writeText(url);
+                toast({
+                  title: "Link copied",
+                  status: "success",
+                  duration: 1800,
+                  isClosable: true,
+                  position: "bottom",
+                });
+              } catch (e) {
+                toast({
+                  title: "Could not copy",
+                  status: "error",
+                  duration: 2000,
+                  isClosable: true,
+                  position: "bottom",
+                });
+              }
+            }}
+          >
             <Text fontSize="xs">share</Text>
           </Button>
           <IconButton aria-label="Reset view" size="sm" onClick={() => {
