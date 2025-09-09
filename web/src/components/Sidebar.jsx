@@ -99,7 +99,7 @@ const Sidebar = () => {
                 </Button>
               </ListItem>
               <ListItem>
-                <Link href="https://github.com/Yuujiso/aitumap">
+                <Link href="https://github.com/Saafrac/aitumap">
                   <Button boxShadow={"lg"} w="100%">
                     <Text size="sm">github</Text>
                   </Button>
@@ -129,19 +129,19 @@ const Sidebar = () => {
           <DrawerFooter>
             <List w="100%" display="flex" flexDirection="column">
               <ListItem justify="space-between">
-                <Link href="https://t.me/yuujisoo">
-                  <Text as="samp">@yuujisoo</Text>
-                </Link>
+                
               </ListItem>
               <ListItem>
-                <Link href="https://t.me/meeezzanine">
-                  <Text as="samp">@meeezzanine</Text>
-                </Link>
               </ListItem>
               <ListItem mt={"1rem"}>
                 <Link href="https://t.me/yuujiso">
                   <Text as="samp">Report a problem/misleading information</Text>
                 </Link>
+              </ListItem>
+              <ListItem mt={"0.75rem"}>
+                <Text fontSize="xs" color="gray.500">
+                  Original authors: @yuujisoo and @meeezzanine. they are cool sigmas
+                </Text>
               </ListItem>
             </List>
           </DrawerFooter>
