@@ -23,7 +23,7 @@ const Search = () => {
   const colorSelect = useColorModeValue("#edf2f7", "#242a36");
   const colorInput = useColorModeValue("#edf2f7", "#242a36");
   const colorBgInput = useColorModeValue("#242a36", "#edf2f7");
-  const colorInputPlaceholder = useColorModeValue("#edf2f7", "#242a366a");
+  const colorInputPlaceholder = useColorModeValue("#edf2f780", "#242a364d");
 
   return (
     <Flex

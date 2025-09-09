@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { useColorModeValue } from "@chakra-ui/react";
+import { useColorModeValue, IconButton, Flex } from "@chakra-ui/react";
 import { MapContext, useWindowDimensions } from "../../../shared";
 import Wallpaper from "../general/map/Wallpaper";
 import IconsCommon from "../general/map/IconsCommon";
@@ -16,14 +16,16 @@ const MapLayout = ({ children }) => {
   const strokeColorLight = "#7f7f7f";
   const strokeColorDark = "#7f7f7f";
   const strokeColor = useColorModeValue(strokeColorLight, strokeColorDark);
-  const { funMode } = useContext(MapContext);
+  const { funMode, registerPanZoomApi, panZoomApi } = useContext(MapContext);
 
   const dropShadow = funMode
     ? "drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5))"
     : "";
 
   return (
-    <TransformWrapper defaultScale={1}>
+    <TransformWrapper defaultScale={1} onInit={({ instance }) => {
+      try { registerPanZoomApi?.(instance); } catch (e) {}
+    }}>
       <TransformComponent>
         <svg
           width={width}
@@ -151,6 +153,14 @@ const MapLayout = ({ children }) => {
                   .room-map-group-search-target polyline {
                     fill:#62cf6b !important;
                   }
+                  .room-pulse {
+                    animation: pulse 1.2s ease-out 1;
+                  }
+                  @keyframes pulse {
+                    0% { filter: drop-shadow(0 0 0 rgba(98,207,107,0)); }
+                    50% { filter: drop-shadow(0 0 12px rgba(98,207,107,0.75)); }
+                    100% { filter: drop-shadow(0 0 0 rgba(98,207,107,0)); }
+                  }
                   .map-groups-walls path,
                   .map-groups-walls polyline,
                   .map-groups-walls polygon,
@@ -217,6 +227,13 @@ const MapLayout = ({ children }) => {
           {children}
           <IconsCommon />
         </svg>
+        <Flex position="absolute" right="16px" bottom="16px" gap="8px">
+          <IconButton aria-label="Reset view" size="sm" onClick={() => {
+            try { panZoomApi?.resetTransform?.(); } catch (e) {}
+          }}>
+            ⤢
+          </IconButton>
+        </Flex>
       </TransformComponent>
     </TransformWrapper>
   );

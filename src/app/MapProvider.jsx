@@ -8,6 +8,21 @@ const MapProvider = ({ children }) => {
   const [selectedBlockOption, setSelectedBlockOption] = useState("");
   const [isKeyboardTyping, setIsKeyboardTyping] = useState(false);
   const [funMode, setFunMode] = useState(false);
+  const [panZoomApi, setPanZoomApi] = useState(null);
+
+  const floorNameToNumber = (name) => {
+    if (name === "first") return 1;
+    if (name === "second") return 2;
+    if (name === "third") return 3;
+    return undefined;
+  };
+
+  const floorNumberToName = (num) => {
+    if (num === "1" || num === 1) return "first";
+    if (num === "2" || num === 2) return "second";
+    if (num === "3" || num === 3) return "third";
+    return undefined;
+  };
   const floorOptionData = [
     {
       id: 3,
@@ -46,6 +61,45 @@ const MapProvider = ({ children }) => {
   const handleBlockOptionChange = (e) => {
     setSelectedBlockOption(e.target.value);
   };
+
+  const registerPanZoomApi = (api) => {
+    setPanZoomApi(api);
+  };
+
+  useEffect(() => {
+    // Hydrate state from URL once on mount
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const block = params.get("block");
+      const floor = params.get("floor");
+      const room = params.get("room");
+
+      if (block) setSelectedBlockOption(block.toUpperCase());
+      const floorName = floorNumberToName(floor);
+      if (floorName) setSelectedFloorOption(floorName);
+      if (room) setSearch(room.toUpperCase());
+    } catch (e) {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    // Sync state to URL (shareable links)
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (selectedBlockOption) params.set("block", selectedBlockOption);
+      else params.delete("block");
+
+      const floorNum = floorNameToNumber(selectedFloorOption);
+      if (floorNum) params.set("floor", String(floorNum));
+      else params.delete("floor");
+
+      if (search) params.set("room", search.toUpperCase());
+      else params.delete("room");
+
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState({}, "", newUrl);
+    } catch (e) {}
+  }, [selectedBlockOption, selectedFloorOption, search]);
 
   useEffect(() => {
     const handleKeyboardTyping = () => {
@@ -89,7 +143,14 @@ const MapProvider = ({ children }) => {
       if (groups.length > 0) {
         groups.forEach((group) => {
           group.classList.add("room-map-group-search-target");
+          group.classList.remove("room-pulse");
         });
+        // Focus map to the first matched group
+        try {
+          if (panZoomApi && typeof panZoomApi.zoomToElement === "function") {
+            panZoomApi.zoomToElement(groups[0], 2, 200);
+          }
+        } catch (e) {}
       }
 
       const groupsToRemove = document.querySelectorAll(
@@ -193,7 +254,14 @@ const MapProvider = ({ children }) => {
       if (groups.length > 0) {
         groups.forEach((group) => {
           group.classList.add("room-map-group-search-target");
+          group.classList.remove("room-pulse");
         });
+        // Focus map to the first matched group
+        try {
+          if (panZoomApi && typeof panZoomApi.zoomToElement === "function") {
+            panZoomApi.zoomToElement(groups[0], 2, 200);
+          }
+        } catch (e) {}
       }
 
       const groupsToRemove = document.querySelectorAll(
@@ -210,8 +278,24 @@ const MapProvider = ({ children }) => {
     const handleSearch = () => {
       handleKeyboardTyping();
 
+      const strongMatch = /(^C\d\.\d\.\d{2,}$)|(^\d{3,}$)/i.test(search);
+
       if (isKeyboardTyping) withKeyboardTyping(search);
       else withoutKeyboardTyping();
+
+      // Re-trigger pulse on strong match (full room id like C1.2.223 or 223)
+      const pulseTargets = document.querySelectorAll(
+        `[data-name*="${search.toUpperCase()}"]`
+      );
+      pulseTargets.forEach((el) => {
+        el.classList.remove("room-pulse");
+        // Only pulse when match is strong and specific
+        if (strongMatch) {
+          // Force reflow to restart animation
+          void el.offsetWidth;
+          el.classList.add("room-pulse");
+        }
+      });
     };
 
     handleSearch();
@@ -232,6 +316,8 @@ const MapProvider = ({ children }) => {
         handleFloorOptionClick,
         setFunMode,
         funMode,
+        panZoomApi,
+        registerPanZoomApi,
       }}
     >
       {children}
